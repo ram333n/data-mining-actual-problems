@@ -29,7 +29,5 @@ def test_knn():
     ]
     print(f'Predicted class: {knn_classifier.predict(X_test)}')
 
-
-
 if __name__ == '__main__':
     test_knn()
