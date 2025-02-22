@@ -102,3 +102,19 @@ class DecisionTreeClassifier:
             return self.__predict_sample_internal(sample, node.children[sample[node.feature_idx]])
 
         return Counter([child.label for child in node.children.values() if child.is_leaf]).most_common(1)[0][0]
+
+    def print(self):
+        self.__print_tree(self.root, 0)
+
+    def __print_tree(self, node, depth):
+        if node is None:
+            return
+
+        if node.is_leaf:
+            print("  " * depth + f"Leaf({node.label})")
+            return
+
+        print("  " * depth + f"Feature: {node.feature_idx}")
+        for value, child in node.children.items():
+            print("  " * (depth + 1) + f"{node.feature_idx} -> {value}")
+            self.__print_tree(child, depth + 2)

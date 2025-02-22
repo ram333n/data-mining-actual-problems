@@ -51,6 +51,8 @@ def test_decision_tree():
     X_test = np.array([
         [2, 1, 1, 1]
     ])
+
+    decision_tree_classifier.print()
     print(f'Predicted class: {decision_tree_classifier.predict(X_test)}')
 
 if __name__ == '__main__':
