@@ -9,12 +9,13 @@ class Distance(Enum):
 
 
 class KNNClassifier:
-    def __init__(self, k, distance_metric=Distance.EUCLIDEAN, weighted_voting=True):
+    def __init__(self, k, distance_metric=Distance.EUCLIDEAN, weighted_voting=True, verbose=False):
         self.k = k
         self.distance_metric = distance_metric
         self.is_weighted_voting = weighted_voting
         self.X_train = None
         self.y_train = None
+        self.verbose = verbose
 
     def fit(self, X, y):
         self.__validate_fit_values(X, y)
@@ -38,6 +39,9 @@ class KNNClassifier:
         distances = [self.__eval_distance(sample, x) for x in self.X_train]
         k_neighbors_indices = np.argsort(distances)[:self.k]
 
+        if self.verbose:
+            print(f'K-nearest-neighbors rows indices: {k_neighbors_indices}')
+
         return self.__perform_voting(distances, k_neighbors_indices)
 
     def __eval_distance(self, x, y):
@@ -57,5 +61,8 @@ class KNNClassifier:
             label = self.y_train[kn_index]
             label_vote = voting_results.get(label, 0) + 1 / distances[kn_index] ** 2
             voting_results[label] = label_vote
+
+        if self.verbose:
+            print(f'Best vote: {voting_results.get(max(voting_results, key=voting_results.get))}')
 
         return max(voting_results, key=voting_results.get)

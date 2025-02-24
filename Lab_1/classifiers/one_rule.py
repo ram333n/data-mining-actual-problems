@@ -1,9 +1,11 @@
 import numpy as np
 
+
 class OneRuleClassifier:
-    def __init__(self):
+    def __init__(self, verbose):
         self.best_feature = None
         self.rules = None
+        self.verbose = verbose
 
     def fit(self, X, y):
         self.__validate_fit_values(X, y)
@@ -21,6 +23,9 @@ class OneRuleClassifier:
                 min_error = cur_error
                 best_feature_idx = f_idx
                 best_rules = cur_rules
+
+        if self.verbose:
+            print(f'Best feature idx: {best_feature_idx}, error rate: {min_error}')
 
         self.best_feature = best_feature_idx
         self.rules = best_rules

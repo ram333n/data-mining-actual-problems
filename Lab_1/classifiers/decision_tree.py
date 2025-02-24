@@ -14,7 +14,7 @@ class TreeNode:
         return TreeNode( None, label, True)
 
     @staticmethod
-    def decision_node(feature_idx):
+    def create_decision_node(feature_idx):
         return TreeNode(feature_idx, None, False)
 
 
@@ -53,12 +53,11 @@ class DecisionTreeClassifier:
             return TreeNode.create_leaf(Counter(y).most_common(1)[0][0])
 
         best_feature_idx = self.__best_feature_idx(X, y, features_indices)
-        node = TreeNode.decision_node(best_feature_idx)
+        node = TreeNode.create_decision_node(best_feature_idx)
 
         for f_val in self.possible_values_by_feature_idx[best_feature_idx]:
             samples_with_f_val_idx = X[:, best_feature_idx] == f_val
             X_subset = X[samples_with_f_val_idx, :]
-            print(f'array: {features_indices}, remove: {best_feature_idx}')
             features_to_process = [val for val in features_indices if val != best_feature_idx]
             subtree = self.__build_tree_internal(X_subset, y[samples_with_f_val_idx], features_to_process)
             node.children[f_val] = subtree
