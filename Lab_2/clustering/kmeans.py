@@ -1,12 +1,13 @@
 import numpy as np
 
 class KMeans:
-    def __init__(self, n_clusters=3, max_iter=300, tol=1e-4, centroids=None):
+    def __init__(self, n_clusters=3, max_iter=300, tol=1e-4, centroids=None, random_state=42):
         self.n_clusters = n_clusters
         self.max_iter = max_iter
         self.tol = tol
         self.centroids = centroids
         self.labels = []
+        self.random_state = random_state
 
     def fit(self, X):
         self.__init_centroids_if_empty(X)
@@ -24,6 +25,7 @@ class KMeans:
         if self.centroids is not None:
             return
 
+        np.random.seed(self.random_state)
         self.centroids = X[np.random.choice(X.shape[0], self.n_clusters, replace=False)]
 
     def __assign_labels(self, X):
