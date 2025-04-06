@@ -34,9 +34,6 @@ class DBSCAN:
         point = X[point_idx]
 
         for i in range(points_cnt):
-            if i == point_idx:
-                continue
-
             if self.__distance(point, X[i]) < self.eps:
                 neighbors.append(i)
 
