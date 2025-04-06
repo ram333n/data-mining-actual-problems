@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 
+from clustering.dbscan import DBSCAN
+
 
 class PlotUtils:
-    cluster_colors = ['red', 'blue', 'green', 'orange', 'purple']
+    cluster_colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'magenta']
 
     @staticmethod
     def plot(description, X, clusters, centroids=None):
@@ -13,6 +15,21 @@ class PlotUtils:
 
         if centroids is not None:
             plt.scatter(centroids[:, 0], centroids[:, 1], color='black', marker='x')
+
+        plt.title(description)
+        plt.grid(True)
+        plt.show()
+
+    @staticmethod
+    def plot_dbscan(description, X, clusters):
+        plt.figure(figsize=(8, 8))
+
+        for i in range(X.shape[0]):
+            if clusters[i] != DBSCAN.NOISE_LABEL:
+                plt.scatter(X[i, 0], X[i, 1],
+                            color=PlotUtils.cluster_colors[clusters[i]])
+            else:
+                plt.scatter(X[i, 0], X[i, 1], color='black', marker='x')
 
         plt.title(description)
         plt.grid(True)

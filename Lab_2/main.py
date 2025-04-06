@@ -1,4 +1,6 @@
 from sklearn.datasets import make_blobs
+
+from clustering.dbscan import DBSCAN
 from clustering.kmeans import KMeans
 from clustering.kmedoids import KMedoids
 from util.plotting import PlotUtils
@@ -25,8 +27,19 @@ def test_k_medoids():
 
     PlotUtils.plot('K-medoids', X, kmedoids.labels, kmedoids.medoids)
 
+def test_dbscan():
+    X, _ = make_blobs(n_samples=300, centers=3, random_state=42)
+
+    dbscan = DBSCAN()
+    dbscan.fit(X)
+
+    print('DBSCAN Cluster Assignments:', dbscan.labels)
+
+    PlotUtils.plot_dbscan('DBSCAN', X, dbscan.labels)
+
+
 def main():
-    test_k_medoids()
+    test_dbscan()
 
 if __name__ == '__main__':
     main()
