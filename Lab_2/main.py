@@ -1,5 +1,6 @@
 from sklearn.datasets import make_blobs
 
+from clustering.agglomerative_clustering import AgglomerativeClustering
 from clustering.dbscan import DBSCAN
 from clustering.kmeans import KMeans
 from clustering.kmedoids import KMedoids
@@ -37,9 +38,19 @@ def test_dbscan():
 
     PlotUtils.plot_dbscan('DBSCAN', X, dbscan.labels)
 
+def test_agg_clustering():
+    X, _ = make_blobs(n_samples=300, centers=3, random_state=42)
+    agg_clustering = AgglomerativeClustering()
+    agg_clustering.fit(X)
+
+    print('Agglomerative Clustering Cluster Assignments:', agg_clustering.labels)
+
+    # PlotUtils.plot_dendrogram('Agg clustering', agg_clustering)
+    PlotUtils.plot('Agg clustering', X, agg_clustering.labels)
+
 
 def main():
-    test_dbscan()
+    test_agg_clustering()
 
 if __name__ == '__main__':
     main()

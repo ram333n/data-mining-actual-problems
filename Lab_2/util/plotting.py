@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 from clustering.dbscan import DBSCAN
 
@@ -33,4 +34,17 @@ class PlotUtils:
 
         plt.title(description)
         plt.grid(True)
+        plt.show()
+
+    @staticmethod
+    def plot_dendrogram(description, agg_clustering):
+        # Convert the linkage matrix to the correct format and plot the dendrogram
+        plt.figure(figsize=(10, 6))
+        plt.title('Hierarchical Clustering Dendrogram')
+        plt.xlabel('Sample index or (cluster size)')
+        plt.ylabel('Distance')
+
+        # Plot the dendrogram
+        plt.imshow(np.array(agg_clustering.linkage_matrix), aspect='auto', cmap='viridis')
+        plt.colorbar()
         plt.show()
