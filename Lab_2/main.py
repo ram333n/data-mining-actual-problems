@@ -39,7 +39,7 @@ def test_dbscan():
     PlotUtils.plot_dbscan('DBSCAN', X, dbscan.labels)
 
 def test_agg_clustering():
-    X, _ = make_blobs(n_samples=300, centers=3, random_state=42)
+    X, _ = make_blobs(n_samples=50, centers=3, random_state=42)
     agg_clustering = AgglomerativeClustering()
     agg_clustering.fit(X)
 

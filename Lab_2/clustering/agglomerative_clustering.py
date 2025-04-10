@@ -1,58 +1,70 @@
 import numpy as np
-from numpy import dtype
 
 
 class AgglomerativeClustering:
     def __init__(self, n_clusters=3, linkage='ward'):
         self.n_clusters = n_clusters
-        self.clusters_points = []
+        self.clusters = {}
         self.linkage = linkage
         self.linkage_matrix = []
         self.labels = []
 
     def fit(self, X):
         n_samples = X.shape[0]
-        self.clusters_points = [[i] for i in range(n_samples)]
+        self.clusters = self.__init_clusters(X)
 
-        while len(self.clusters_points) > self.n_clusters:
-            print(len(self.clusters_points))
+        while len(self.clusters.keys()) != self.n_clusters:
+            cluster_i_id, cluster_j_id, dist = self.__find_closest_clusters(X)
+            self.clusters = self.__merge_clusters(X, cluster_i_id, cluster_j_id, dist)
 
-            min_linkage = np.inf
-            closest_clusters = (-1, -1)
+        self.labels = self.__finalize_labels(n_samples)
 
-            for i in range(len(self.clusters_points)):
-                for j in range(i + 1, len(self.clusters_points)):
-                    cluster_i = self.clusters_points[i]
-                    cluster_j = self.clusters_points[j]
-                    cur_linkage = self.__eval_linkage(cluster_i, cluster_j, X)
+    def __init_clusters(self, X):
+        return {sample_idx: [sample_idx] for sample_idx in range(X.shape[0])}
 
-                    if cur_linkage < min_linkage:
-                        min_linkage = cur_linkage
-                        closest_clusters = (i, j)
+    def __find_closest_clusters(self, X):
+        min_dist = np.inf
+        closest_clusters = None
 
-            i, j = closest_clusters
-            self.linkage_matrix.append([
-                self.clusters_points[i][0],
-                self.clusters_points[j][0],
-                min_linkage,
-                len(self.clusters_points[i]) + len(self.clusters_points[j])
-            ])
+        clusters_ids = list(self.clusters.keys())
 
-            self.clusters_points[i] = self.clusters_points[i] + self.clusters_points[j]
-            del self.clusters_points[j]
+        for i, cluster_i_idx in enumerate(clusters_ids[:-1]): # TODO: debug
+            for j, cluster_j_idx in enumerate(clusters_ids[i + 1:]):
+                dist = self.__eval_distance(X, cluster_i_idx, cluster_j_idx)
 
-        self.__finalize_labels(X)
+                if dist < min_dist:
+                    min_dist = dist
+                    closest_clusters = (cluster_i_idx, cluster_j_idx)
+
+        closest_cluster_i, closest_cluster_j = closest_clusters
+
+        return closest_cluster_i, closest_cluster_j, min_dist
 
     def __distance(self, p1, p2):
         return np.linalg.norm(p1 - p2)
 
-    def __eval_linkage(self, cluster_i, cluster_j, X):
-        distances = [self.__distance(X[p1], X[p2]) for p1 in cluster_i for p2 in cluster_j]
+    def __eval_distance(self, X, cluster_i, cluster_j):
+        cluster_i_points = X[cluster_i]
+        cluster_j_points = X[cluster_j]
+        distances = [self.__distance(p1, p2) for p1 in cluster_i_points for p2 in cluster_j_points]
 
         return np.min(distances) #TODO: implement other linkage methods
 
-    def __finalize_labels(self, X):
-        self.labels = np.zeros(X.shape[0], dtype=int)
-        for cluster_idx, cluster in enumerate(self.clusters_points):
-            for point in cluster:
-                self.labels[point] = cluster_idx
+    def __merge_clusters(self, X, cluster_i_id, cluster_j_id, dist):
+        new_clusters = {0: self.clusters[cluster_i_id] + self.clusters[cluster_j_id]}
+
+        for cluster_id in self.clusters.keys():
+            if cluster_id in [cluster_i_id, cluster_j_id]:
+                continue
+
+            new_clusters[len(new_clusters.keys())] = self.clusters[cluster_id]
+
+        return new_clusters
+
+    def __finalize_labels(self, n_samples):
+        labels = np.zeros(n_samples, dtype=int)
+
+        for cluster_id, cluster_pts in self.clusters.items():
+            labels[cluster_pts] = cluster_id
+
+        return labels
