@@ -20,7 +20,6 @@ class AgglomerativeClustering:
         self.clusters = self.__init_clusters(X)
 
         while len(self.clusters.keys()) != self.n_clusters:
-            print(len(self.clusters.keys()))
             cluster_i_id, cluster_j_id, dist = self.__find_closest_clusters(X)
             self.clusters = self.__merge_clusters(X, cluster_i_id, cluster_j_id, dist)
 
