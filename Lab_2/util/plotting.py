@@ -16,7 +16,8 @@ class PlotUtils:
             plt.scatter(X[i, 0], X[i, 1], color=PlotUtils.cluster_colors[clusters[i]])
 
         if centroids is not None:
-            plt.scatter(centroids[:, 0], centroids[:, 1], color='black', marker='x')
+            plt.scatter(centroids[:, 0], centroids[:, 1], color='black', marker='x', label='Centroid')
+            plt.legend()
 
         plt.title(description)
         plt.grid(True)
@@ -30,10 +31,12 @@ class PlotUtils:
             if clusters[i] != DBSCAN.NOISE_LABEL:
                 plt.scatter(X[i, 0], X[i, 1],
                             color=PlotUtils.cluster_colors[clusters[i]])
-            else:
-                plt.scatter(X[i, 0], X[i, 1], color='black', marker='x')
+
+        noise_mask = clusters == DBSCAN.NOISE_LABEL
+        plt.scatter(X[noise_mask, 0], X[noise_mask, 1], color='black', marker='x', label="Noise")
 
         plt.title(description)
+        plt.legend()
         plt.grid(True)
         plt.show()
 
