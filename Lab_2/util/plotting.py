@@ -6,7 +6,7 @@ from clustering.dbscan import DBSCAN
 
 
 class PlotUtils:
-    cluster_colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'magenta']
+    cluster_colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'magenta', '']
 
     @staticmethod
     def plot(description, X, clusters, centroids=None):
